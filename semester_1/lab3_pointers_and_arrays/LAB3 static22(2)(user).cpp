@@ -21,9 +21,9 @@ int main()
 			pos++;
 		}
 	}
-	for (int i = 0, pos = 0; i < SIZE; i++) 
+	for (int i = 0, pos = 0; i < SIZE; i++)
 	{
-		if (arr[i] < 0) 
+		if (arr[i] < 0)
 		{
 			int temp = arr[i];
 			for (int j = i; j > pos; j--)
@@ -33,8 +33,13 @@ int main()
 			arr[pos] = temp;
 			pos++;
 		}
-	}//конец сортировки
-    int small, pr = 1;
+	}
+	for (int i = 0; i < SIZE; i++)
+	{
+		std::cout << arr[i] << std::endl;
+	}                  //конец сортировки
+
+	int small, pr = 1;
 	small = abs(arr[0]);
 	for (int i = 0; i < SIZE; i++)
 	{
@@ -42,14 +47,14 @@ int main()
 		{
 			small = abs(arr[i]);
 		}
-    }
+	}
 	for (int i = 0; i < SIZE; i++)
 	{
-		if(arr[i]==small)
+		if (abs(arr[i]) == small)
 		{
 			break;
 		}
 		pr = pr * arr[i];
-    }
-    std::cout << "Произведение= " << pr << std::endl;
+	}
+	std::cout << "Произведение= " << pr << std::endl;
 }
