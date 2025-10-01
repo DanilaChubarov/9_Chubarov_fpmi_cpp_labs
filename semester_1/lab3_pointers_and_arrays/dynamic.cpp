@@ -4,7 +4,7 @@
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	int size, maxLen = 1, currLen = 1, startIndex = 0, currStart = 0, a, big=999999999999, small=-9999999999999, sum=0;
+	int size, maxLen = 1, currLen = 1, startIndex = 0, currStart = 0, a,  sum=0;
 	std::cout << "Введите размер массива" << std::endl;
 	std::cin >> size;
 	int* arr = new int[size];
@@ -67,6 +67,7 @@ int main()
 		startIndex = currStart;
 	}
 	std::cout << "Самая длинная возрастающая цепочка: ";
+	int big = arr[0], small = arr[0];
 	for (int i = startIndex; i < startIndex + maxLen; i++) {
 		std::cout << arr[i] << " ";
 	}
