@@ -1,10 +1,11 @@
+
 #include <iostream>
 #include <cmath>
 #include <random>
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	int size, maxLen = 1, currLen = 1, startIndex = 0, currStart = 0, a,  sum=0;
+	int size, maxLen = 1, currLen = 1, startIndex = 0, currStart = 0, a, sum = 0;
 	std::cout << "Введите размер массива" << std::endl;
 	std::cin >> size;
 	int* arr = new int[size];
@@ -67,45 +68,39 @@ int main()
 		startIndex = currStart;
 	}
 	std::cout << "Самая длинная возрастающая цепочка: ";
-	int big = arr[0], small = arr[0];
 	for (int i = startIndex; i < startIndex + maxLen; i++) {
 		std::cout << arr[i] << " ";
 	}
-	for (int i = 0; i < size; i++)//поиск большого
+	int big_index, small_index;
+	for (int i = 0, big = arr[0]; i < size; i++)//поиск большого
 	{
 		if (big < arr[i])
 		{
 			big = arr[i];
 		}
+		if (big == arr[i])
+		{
+			big_index = i;
+		}
 
 	}
-	for (int i = 0; i < size; i++)//поиск маленького
+	for (int i = 0, small=arr[0]; i < size; i++)//поиск маленького
 	{
-		if (small > arr[i])
+		if (small >= arr[i])
 		{
 			small = arr[i];
 		}
+		if (small == arr[i])
+		{
+			small_index = i;
+		}
 
 	}
-	for (int i = 0; i < size; i++)//подсчёт сумммы
+	
+	for (int i = std::min(big_index, small_index) + 1; i < std::max(small_index, big_index); i++)//подсчёт сумммы
 	{
-		if (arr[i] == small)
-		{
-			goto endloops;
-		}
-		if (arr[i] == big)
-		{
-			for (int j = i + 1; j < size; j++)
-			{
-				if (arr[j] == small)
-				{
-					goto endloops;
-				}
-				sum = arr[j] + sum;
-			}
-		}
+		sum = arr[i] + sum;
 	}
-endloops:
 	std::cout << std::endl << "Сумма между первым максимальным и последним минимальным элементами " << sum;
 
 
