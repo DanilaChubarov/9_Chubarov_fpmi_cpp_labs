@@ -28,23 +28,6 @@ void ReadLinesFromFile(const std::string& path, std::vector < std::string>& text
 	}
 	fin.close();
 }
-int FindingAmountOfWords(std::string line, std::string alphabet)
-{
-	int WordsCount = 0;
-	std::string::size_type beg_index = 0;
-	std::string::size_type end_index = line.find_first_not_of(alphabet, beg_index);
-	while (beg_index != std::string::npos) {
-
-		std::string word = line.substr(beg_index, end_index - beg_index);
-		if (!word.empty()) {
-			WordsCount++;
-		}
-
-		beg_index = line.find_first_of(alphabet, end_index);
-		end_index = line.find_first_not_of(alphabet, beg_index);
-	}
-	return WordsCount;
-}
 int FindingBiggestAmountOfWords(std::vector<int> lines)
 {
 	int biggest = 0;
@@ -57,12 +40,61 @@ int FindingBiggestAmountOfWords(std::vector<int> lines)
 	}
 	return biggest;
 }
+std::vector<std::string> ParsingWords(const std::string& line, const std::string& alphabet)
+{
+	std::vector<std::string> words;
+	std::string::size_type beg_index = 0;
+	std::string::size_type end_index = line.find_first_not_of(alphabet, beg_index);
+	while (beg_index != std::string::npos) {
+
+		std::string word = line.substr(beg_index, end_index - beg_index);
+		if (!word.empty()) {
+			words.push_back(word);
+		}
+
+		beg_index = line.find_first_of(alphabet, end_index);
+		end_index = line.find_first_not_of(alphabet, beg_index);
+	}
+	return words;
+}
+int FindingBiggestWord(const std::vector<std::string>& line)
+{
+	std::vector<int> LettersInWord(line.size(), 0);
+	for (int i = 0; i < line.size(); ++i)
+	{
+		for (char c : line[i])
+		{
+			LettersInWord[i]++;
+		}
+	}
+	int biggest_word = 0;
+	for (int i = 0; i < line.size(); ++i)
+	{
+		if (biggest_word < LettersInWord[i])
+		{
+			biggest_word = LettersInWord[i];
+		}
+	}
+	return biggest_word;
+}
+int FindingBiggestEverWord(const std::vector<int>& lines)
+{
+	int biggest = 0;
+	for (int i = 0; i < lines.size(); ++i)
+	{
+		if (biggest < lines[i])
+		{
+			biggest = lines[i];
+		}
+	}
+	return biggest;
+}
 
 
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	std::string alphabet = "ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäå¸æçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+	std::string alphabet = "ÐÐ‘Ð’Ð“Ð”Ð•ÐÐ–Ð—Ð˜Ð™ÐšÐ›ÐœÐÐžÐŸÐ Ð¡Ð¢Ð£Ð¤Ð¥Ð¦Ð§Ð¨Ð©ÐªÐ«Ð¬Ð­Ð®Ð¯Ð°Ð±Ð²Ð³Ð´ÐµÑ‘Ð¶Ð·Ð¸Ð¹ÐºÐ»Ð¼Ð½Ð¾Ð¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑŽÑ";
 	std::string path = "input.txt";
 	std::vector<std::string> text;
 	try {
@@ -71,21 +103,26 @@ int main()
 	catch (const std::string& msg) {
 		std::cerr << msg << std::endl;
 	}
-	
-	std::vector<int> AmountOfWordsInLine(text.size());
-	for (int amount, i = 0; i < text.size(); ++i)
+	std::vector<std::vector<std::string> > RussianWords(text.size());
+	for (int i = 0; i < text.size(); ++i)
 	{
-		amount = FindingAmountOfWords(text[i],alphabet);
-		AmountOfWordsInLine[i] = amount;
+		RussianWords[i] = ParsingWords(text[i], alphabet);
 	}
-	int BiggestAmountOfWords = FindingBiggestAmountOfWords(AmountOfWordsInLine);
-	if (BiggestAmountOfWords==0)
+	std::vector <int> BiggestWordInLine (RussianWords.size());
+	for (int i = 0; i < RussianWords.size(); ++i)
 	{
-		std::cout << "Íåò ðóññêèõ ñëîâ íå â îäíîé èç ñòðîê" << std::endl;
+		BiggestWordInLine[i] = FindingBiggestWord(RussianWords[i]);
 	}
+	int biggest_word_ever = FindingBiggestEverWord(BiggestWordInLine);
+	if (biggest_word_ever == 0)
+	{
+		std::cerr << "ÐÐµÑ‚ Ñ€ÑƒÑÑÐºÐ¸Ñ… ÑÐ»Ð¾Ð² Ð² Ñ„Ð°Ð¹Ð»Ðµ!" << std::endl;
+		return 1;
+	}
+
 	for (int lineouts = 0, i = 0; i < text.size(); ++i)
 	{
-		if (AmountOfWordsInLine[i] == BiggestAmountOfWords)
+		if(BiggestWordInLine[i] == biggest_word_ever)
 		{
 			std::cout << text[i] << std::endl;
 			lineouts++;
