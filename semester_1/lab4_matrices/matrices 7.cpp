@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <iomanip>
 int** CreateMatrix(int n, int m)
 {
 	int** matrix = new int* [n];
@@ -47,7 +48,7 @@ void PrintMatrix(int** matrix, int n, int m)
 	{
 		for (int col = 0; col < m; ++col)
 		{
-			std::cout << matrix[row][col] << " ";
+			std::cout << std::setw(3)<<matrix[row][col] << " ";
 
 		}
 		std::cout << std::endl;
@@ -110,50 +111,71 @@ int SummOfDioganal(int n, int** matrix)
 	}
 	return sum;
 }
-
-int main()
+int AskStart()
 {
-	setlocale(LC_ALL, "rus");
-	int n, m, start;
-	std::cout << "Введите количество строк в массиве" << std::endl;
+	int n;
+	std::cout << "Введите число с которого начнётся спираль" << std::endl;
 	if (!(std::cin >> n))
 	{
-		std::cerr << "Это не число";
-		std::exit(1);
+		throw std::string("Число должно быть натуральным");
 	}
-	if (n < 1)
+	if (n < 0)
 	{
-		std::cout << "Число меньше нуля";
-		std::exit(2);
+		throw std::string("Число должно быть натуральным");
 	}
+	return n;
+}
+
+int AskAmountOfRows()
+{
+	 int n;
+	std::cout << "Введите количество строк в массиве" << std::endl;
+	if (!(std::cin >> n)  )
+	{
+		throw std::string("Некорректно введено число строк");
+	}
+	if (n < 0)
+	{
+		throw std::string("Некорректно введено число строк");
+	}
+	return n;
+}
+int AskAmountOfCols(unsigned int n)
+{
+	int m;
 	std::cout << "Введите количество столбцов в массиве" << std::endl;
 	if (!(std::cin >> m))
 	{
-		std::cerr << "Это не число";
-		std::exit(3);
+		throw std::string ("Некорректно введено число столбцов");
 	}
-	if (m < 1)
+	if (m < 0)
 	{
-		std::cerr << "Число меньше нуля";
-		std::exit(4);
+		throw std::string("Некорректно введено число строк");
 	}
 	if (!(n == m))
 	{
-		std::cerr << "Матрица должна быть квадратной";
-		std::exit(5);
+		throw std::string("Матрица должна быть квадратной");
+		
 	}
+	return m;
+}
+int main()
+{
+	setlocale(LC_ALL, "rus");
+    int n, m, start;
+	try
+	{
+		n = AskAmountOfRows();
+		m = AskAmountOfCols(n);
+		start = AskStart();
+	}
+	catch (const std::string& msg)
+	{
+		std::cerr << msg << std::endl;
+		return 0;
+	}
+
 	int** matrix = CreateMatrix(n, m);
-	std::cout << "Введите число с которого начнётся спираль" << std::endl;
-	if (!(std::cin >> start))
-	{
-		std::cerr << "Это не число";
-		std::exit(6);
-	}
-	if (start < 1)
-	{
-		std::cout << "Число не натуральное";
-		std::exit(7);
-	}
 	FillMatrixSpiral(matrix, n, m, start);
 	PrintMatrix(matrix, n, m);
 	std::cout << "Сумма элементов побочной диагонали= " << SummOfDioganal(n, matrix) << std::endl;
