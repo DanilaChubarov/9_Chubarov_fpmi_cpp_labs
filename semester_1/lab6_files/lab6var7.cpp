@@ -1,3 +1,4 @@
+#include <exception>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -11,11 +12,11 @@ void ReadLinesFromFile(const std::string& path, std::vector < std::string>& text
 	std::ifstream fin{ path };
 	if (!fin.is_open())
 	{
-		throw ("Error: Could not open the file \"" + path + "\"...");
+		throw std::runtime_error("Error: Could not open the file \"" + path + "\"...");
 	}
 	if (IsEmptyFile(fin))
 	{
-		throw ("Error: \"" + path + "\" is empty...");
+		throw std::runtime_error("Error: \"" + path + "\" is empty...");
 	}
 	std::string line;
 	while (std::getline(fin, line))
@@ -48,8 +49,16 @@ std::vector<std::string> ParsingWords(const std::string& line, const std::string
 	while (beg_index != std::string::npos) {
 
 		std::string word = line.substr(beg_index, end_index - beg_index);
+		std::string word_with_same_letters;
 		if (!word.empty()) {
-			words.push_back(word);
+			for (size_t i = 0; i < word.size(); i++)
+			{
+				if (word[i] == word[i + 1])
+				{
+					word_with_same_letters.push_back(word[i]);
+				}
+			}
+			words.push_back(word_with_same_letters);
 		}
 
 		beg_index = line.find_first_of(alphabet, end_index);
@@ -100,15 +109,16 @@ int main()
 	try {
 		ReadLinesFromFile(path, text);
 	}
-	catch (const std::string& msg) {
-		std::cerr << msg << std::endl;
+	catch (const std::exception& msg) {
+		std::cerr << msg.what() << std::endl;
+		return 0;
 	}
 	std::vector<std::vector<std::string> > RussianWords(text.size());
 	for (int i = 0; i < text.size(); ++i)
 	{
 		RussianWords[i] = ParsingWords(text[i], alphabet);
 	}
-	std::vector <int> BiggestWordInLine (RussianWords.size());
+	std::vector <int> BiggestWordInLine(RussianWords.size());
 	for (int i = 0; i < RussianWords.size(); ++i)
 	{
 		BiggestWordInLine[i] = FindingBiggestWord(RussianWords[i]);
@@ -122,7 +132,7 @@ int main()
 
 	for (int lineouts = 0, i = 0; i < text.size(); ++i)
 	{
-		if(BiggestWordInLine[i] == biggest_word_ever)
+		if (BiggestWordInLine[i] == biggest_word_ever)
 		{
 			std::cout << text[i] << std::endl;
 			lineouts++;
