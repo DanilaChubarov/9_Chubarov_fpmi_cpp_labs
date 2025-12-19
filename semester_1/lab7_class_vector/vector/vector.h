@@ -3,6 +3,7 @@
 #include <utility>
 #include <algorithm>
 #include <ostream>
+#include <exception>
 
 class Vector
 {
@@ -80,6 +81,23 @@ public:
 	{
 		return data_[index];
 	}
+	int& At(size_t index)
+	{
+		if (index >= size_)
+		{
+			throw std::out_of_range("The index is out of range!!!");
+		}
+		return data_[index];
+	}
+	const int& At(size_t index) const
+	{
+		if (index >= size_)
+		{
+			throw std::out_of_range("The index is out of range!!!");
+		}
+		return data_[index];
+	}
+
 	int Size()
 	{
 		return size_;
