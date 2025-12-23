@@ -52,7 +52,7 @@ ForwardList::ForwardList(size_t count, int32_t value)
 {
     first_ = new Node(value);
     Node* current_this = first_;
-    for (size_t i = 0; i < count; ++i)
+    for (size_t i = 0; i < count-1; ++i)
     {
         current_this->next_ = new Node(value);
         current_this= current_this->next_;
